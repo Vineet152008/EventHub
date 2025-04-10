@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHub - Most College</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <h1>Event<span>Hub</span></h1>
+                </a>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-right">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">3</span>
+                    <div class="notification-dropdown">
+                        <div class="notification-item">
+                            <p>New event: Annual Tech Fest</p>
+                            <small>Just now</small>
+                        </div>
+                        <div class="notification-item">
+                            <p>Registration open: Coding Hackathon</p>
+                            <small>2 hours ago</small>
+                        </div>
+                        <div class="notification-item">
+                            <p>Updated: Cultural Night venue</p>
+                            <small>1 day ago</small>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn login-btn">Login</button>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Discover and Join Campus Events</h1>
+                <p>Your one-stop platform for all events happening at Most College</p>
+                <a href="#events" class="btn btn-primary">Browse Events</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="events">
+        <div class="container">
+            <h2 class="section-title">Upcoming Events</h2>
+            
+            <!-- Filters -->
+            <div class="event-filters">
+                <div class="filter-group">
+                    <label for="event-type">Event Type</label>
+                    <select id="event-type" class="filter-select">
+                        <option value="all">All Types</option>
+                        <option value="academic">Academic</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="sports">Sports</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="seminar">Seminar</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="event-department">Department</label>
+                    <select id="event-department" class="filter-select">
+                        <option value="all">All Departments</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="arts">Arts</option>
+                        <option value="science">Science</option>
+                        <option value="business">Business</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="event-date">Date</label>
+                    <select id="event-date" class="filter-select">
+                        <option value="all">All Dates</option>
+                        <option value="today">Today</option>
+                        <option value="tomorrow">Tomorrow</option>
+                        <option value="this-week">This Week</option>
+                        <option value="this-month">This Month</option>
+                    </select>
+                </div>
+                <div class="filter-group search">
+                    <input type="text" id="event-search" placeholder="Search events...">
+                    <button type="button" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Event Cards -->
+            <div class="event-grid">
+                <!-- Event Card 1 -->
+                <div class="event-card" data-type="academic" data-department="engineering">
+                    <div class="event-date">
+                        <span class="day">15</span>
+                        <span class="month">Oct</span>
+                    </div>
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200?text=Tech+Conference" alt="Tech Conference">
+                        <div class="event-badge academic">Academic</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Annual Tech Conference</h3>
+                        <div class="event-details">
+                            <p><i class="fas fa-map-marker-alt"></i> Main Auditorium</p>
+                            <p><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</p>
+                            <p><i class="fas fa-users"></i> Engineering Department</p>
+                        </div>
+                        <button class="btn btn-secondary view-details" data-id="1">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Event Card 2 -->
+                <div class="event-card" data-type="cultural" data-department="arts">
+                    <div class="event-date">
+                        <span class="day">20</span>
+                        <span class="month">Oct</span>
+                    </div>
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200?text=Cultural+Night" alt="Cultural Night">
+                        <div class="event-badge cultural">Cultural</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Annual Cultural Night</h3>
+                        <div class="event-details">
+                            <p><i class="fas fa-map-marker-alt"></i> Open Air Theatre</p>
+                            <p><i class="fas fa-clock"></i> 6:00 PM - 10:00 PM</p>
+                            <p><i class="fas fa-users"></i> Arts Department</p>
+                        </div>
+                        <button class="btn btn-secondary view-details" data-id="2">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Event Card 3 -->
+                <div class="event-card" data-type="sports" data-department="general">
+                    <div class="event-date">
+                        <span class="day">25</span>
+                        <span class="month">Oct</span>
+                    </div>
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200?text=Sports+Tournament" alt="Sports Tournament">
+                        <div class="event-badge sports">Sports</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Inter-College Sports Tournament</h3>
+                        <div class="event-details">
+                            <p><i class="fas fa-map-marker-alt"></i> College Grounds</p>
+                            <p><i class="fas fa-clock"></i> 9:00 AM - 5:00 PM</p>
+                            <p><i class="fas fa-users"></i> Sports Committee</p>
+                        </div>
+                        <button class="btn btn-secondary view-details" data-id="3">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Event Card 4 -->
+                <div class="event-card" data-type="workshop" data-department="business">
+                    <div class="event-date">
+                        <span class="day">30</span>
+                        <span class="month">Oct</span>
+                    </div>
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200?text=Business+Workshop" alt="Business Workshop">
+                        <div class="event-badge workshop">Workshop</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Entrepreneurship Workshop</h3>
+                        <div class="event-details">
+                            <p><i class="fas fa-map-marker-alt"></i> Seminar Hall 2</p>
+                            <p><i class="fas fa-clock"></i> 2:00 PM - 5:00 PM</p>
+                            <p><i class="fas fa-users"></i> Business Department</p>
+                        </div>
+                        <button class="btn btn-secondary view-details" data-id="4">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Event Card 5 -->
+                <div class="event-card" data-type="seminar" data-department="science">
+                    <div class="event-date">
+                        <span class="day">5</span>
+                        <span class="month">Nov</span>
+                    </div>
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200?text=Science+Seminar" alt="Science Seminar">
+                        <div class="event-badge seminar">Seminar</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Latest Advancements in Biotechnology</h3>
+                        <div class="event-details">
+                            <p><i class="fas fa-map-marker-alt"></i> Science Block Auditorium</p>
+                            <p><i class="fas fa-clock"></i> 11:00 AM - 1:00 PM</p>
+                            <p><i class="fas fa-users"></i> Science Department</p>
+                        </div>
+                        <button class="btn btn-secondary view-details" data-id="5">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Event Card 6 -->
+                <div class="event-card" data-type="academic" data-department="engineering">
+                    <div class="event-date">
+                        <span class="day">10</span>
+                        <span class="month">Nov</span>
+                    </div>
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200?text=Coding+Hackathon" alt="Coding Hackathon">
+                        <div class="event-badge academic">Academic</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>24-Hour Coding Hackathon</h3>
+                        <div class="event-details">
+                            <p><i class="fas fa-map-marker-alt"></i> Computer Lab</p>
+                            <p><i class="fas fa-clock"></i> Starts 9:00 AM</p>
+                            <p><i class="fas fa-users"></i> Computer Science Dept</p>
+                        </div>
+                        <button class="btn btn-secondary view-details" data-id="6">View Details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="load-more">
+                <button class="btn btn-outline">Load More Events</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About EventHub</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>EventHub is a centralized platform designed to help students at Most College stay informed about and participate in campus events. We solve the problem of scattered event information by bringing everything together in one place.</p>
+                    <p>Our mission is to increase awareness and participation in college events, enhancing the campus experience for all students.</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>All Events in One Place</h3>
+                            <p>Never miss an event again with our comprehensive listing.</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-filter"></i>
+                            <h3>Easy Filtering</h3>
+                            <p>Find exactly what you're looking for with our powerful filters.</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-bell"></i>
+                            <h3>Real-Time Notifications</h3>
+                            <p>Stay updated with instant notifications about new events.</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-ticket-alt"></i>
+                            <h3>E-Passes</h3>
+                            <p>Register and download event passes directly from the platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h3>Address</h3>
+                            <p>Most College Campus, University Road<br>City Name, State, ZIP</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p>events@mostcollege.edu</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h3>Phone</h3>
+                            <p>+1 (123) 456-7890</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Event<span>Hub</span></h2>
+                    <p>Your campus event destination</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Event Guidelines</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 EventHub - Most College. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Event Details Modal -->
+    <div id="event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <div class="event-header">
+                    <div class="event-badge" id="modal-badge">Academic</div>
+                    <h2 id="modal-title">Event Title</h2>
+                </div>
+                <div class="event-details-content">
+                    <div class="event-image-large">
+                        <img id="modal-image" src="https://via.placeholder.com/600x300" alt="Event">
+                    </div>
+                    <div class="event-info-detailed">
+                        <div class="info-group">
+                            <i class="fas fa-calendar-alt"></i>
+                            <div>
+                                <h4>Date & Time</h4>
+                                <p id="modal-datetime">October 15, 2023 • 10:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <p id="modal-location">Main Auditorium, Building A</p>
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h4>Organized By</h4>
+                                <p id="modal-organizer">Engineering Department</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="event-description">
+                        <h3>Description</h3>
+                        <p id="modal-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id.</p>
+                    </div>
+                    <div class="event-registration">
+                        <h3>Registration</h3>
+                        <form id="registration-form">
+                            <div class="form-group">
+                                <label for="reg-name">Full Name</label>
+                                <input type="text" id="reg-name" name="reg-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-email">Email</label>
+                                <input type="email" id="reg-email" name="reg-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-id">Student ID</label>
+                                <input type="text" id="reg-id" name="reg-id" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-phone">Phone Number</label>
+                                <input type="tel" id="reg-phone" name="reg-phone" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Register Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Success Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content success-content">
+            <span class="close-modal">&times;</span>
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Registration Successful!</h2>
+            <p>You have successfully registered for the event.</p>
+            <div class="epass">
+                <h3>Your E-Pass</h3>
+                <div class="epass-content">
+                    <div class="qr-code">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=EventHub-12345" alt="QR Code">
+                    </div>
+                    <div class="epass-details">
+                        <p><strong>Event:</strong> <span id="epass-event">Annual Tech Conference</span></p>
+                        <p><strong>Name:</strong> <span id="epass-name">John Doe</span></p>
+                        <p><strong>Student ID:</strong> <span id="epass-id">12345</span></p>
+                        <p><strong>Date:</strong> <span id="epass-date">October 15, 2023</span></p>
+                        <p><strong>Time:</strong> <span id="epass-time">10:00 AM - 4:00 PM</span></p>
+                        <p><strong>Venue:</strong> <span id="epass-venue">Main Auditorium</span></p>
+                    </div>
+                </div>
+                <div class="epass-actions">
+                    <button class="btn btn-outline">Download E-Pass</button>
+                    <button class="btn btn-secondary">Send to Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="scripts/main.js"></script>
+</body>
+</html> 
