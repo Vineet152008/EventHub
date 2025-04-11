@@ -1,0 +1,512 @@
+/* Profile Page Styles */
+.page-banner {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/banner-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    margin-top: 75px;
+}
+
+.page-banner h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease;
+}
+
+.page-banner p {
+    font-size: 1.2rem;
+    animation: fadeInUp 1s ease 0.3s;
+    animation-fill-mode: both;
+}
+
+.profile-section {
+    padding: 60px 0;
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+}
+
+/* Profile Sidebar */
+.profile-sidebar {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.user-info {
+    padding: 30px;
+    text-align: center;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.user-avatar {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.change-avatar-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    color: var(--dark-color);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.change-avatar-btn:hover {
+    background-color: var(--gray-color);
+    color: white;
+}
+
+.user-info h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.user-info p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.profile-nav ul {
+    padding: 20px 0;
+}
+
+.profile-nav li {
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.profile-nav li.active {
+    background-color: var(--light-gray);
+    border-left: 3px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.profile-nav li:hover:not(.active) {
+    background-color: var(--light-color);
+}
+
+.profile-nav li i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Profile Content */
+.profile-content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+}
+
+.profile-tab {
+    display: none;
+}
+
+.profile-tab.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.tab-header h2 {
+    font-size: 1.6rem;
+    color: var(--dark-color);
+}
+
+.filter-dropdown select {
+    padding: 8px 15px;
+    border: 1px solid var(--gray-color);
+    border-radius: 4px;
+    background-color: white;
+    font-family: inherit;
+}
+
+/* Events List in Tabs */
+.events-list {
+    display: grid;
+    gap: 15px;
+}
+
+.event-item {
+    display: flex;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.event-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.event-item-image {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+}
+
+.event-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-item-details {
+    padding: 15px;
+    flex-grow: 1;
+    position: relative;
+}
+
+.event-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    background-color: var(--light-color);
+}
+
+.event-status.approved {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.event-status.pending {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.event-item-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    padding-right: 80px;
+}
+
+.event-item-date {
+    font-size: 0.85rem;
+    color: var(--gray-color);
+    margin-bottom: 8px;
+}
+
+.event-item-location {
+    font-size: 0.85rem;
+    color: var(--gray-color);
+    margin-bottom: 10px;
+}
+
+.event-item-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.event-item-actions button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.e-passes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.e-pass-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.e-pass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.e-pass-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.e-pass-body {
+    padding: 15px;
+}
+
+.e-pass-event-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.e-pass-details {
+    margin-bottom: 15px;
+}
+
+.e-pass-details p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.e-pass-details p i {
+    margin-right: 8px;
+    color: var(--primary-color);
+    width: 16px;
+}
+
+.e-pass-code {
+    background-color: var(--light-gray);
+    padding: 8px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+/* Settings Form */
+.settings-form .form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.settings-form .form-group {
+    flex: 1;
+}
+
+.settings-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.settings-form input,
+.settings-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.settings-form input[readonly] {
+    background-color: var(--light-gray);
+    cursor: not-allowed;
+}
+
+.notification-preferences {
+    margin-top: 30px;
+    flex-direction: column;
+}
+
+.notification-preferences h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--dark-color);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    width: auto;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.form-group.full-width {
+    flex-basis: 100%;
+}
+
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tab-cta {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* E-Pass Preview Modal Styles */
+.e-pass-modal-content {
+    max-width: 450px;
+}
+
+.modal-e-pass-preview {
+    margin: 20px 0;
+}
+
+.e-pass-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-banner {
+        height: 200px;
+    }
+    
+    .page-banner h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-nav ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0;
+    }
+    
+    .profile-nav li {
+        padding: 15px;
+        justify-content: center;
+        text-align: center;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .profile-nav li.active {
+        border-left: none;
+        border-bottom: 3px solid var(--primary-color);
+    }
+    
+    .profile-nav li i {
+        margin-right: 8px;
+    }
+    
+    .settings-form .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .event-item {
+        flex-direction: column;
+    }
+    
+    .event-item-image {
+        width: 100%;
+        height: 150px;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-content {
+        padding: 20px 15px;
+    }
+    
+    .profile-nav ul {
+        grid-template-columns: 1fr;
+    }
+    
+    .tab-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-dropdown {
+        margin-top: 15px;
+    }
+    
+    .filter-dropdown select {
+        width: 100%;
+    }
+    
+    .e-passes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-banner {
+        height: 180px;
+    }
+    
+    .page-banner h1 {
+        font-size: 1.8rem;
+    }
+    
+    .page-banner p {
+        font-size: 1rem;
+    }
+    
+    .event-item-actions {
+        flex-direction: column;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+} 
