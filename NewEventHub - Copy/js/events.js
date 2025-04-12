@@ -510,24 +510,27 @@ function updateNotifications() {
         return;
     }
     
+    // Show only the most recent notification
     notificationList.innerHTML = '';
-    notificationsData.forEach(notification => {
-        const notificationItem = document.createElement('div');
-        notificationItem.className = `notification-item ${notification.read ? 'read' : 'unread'}`;
-        
-        notificationItem.innerHTML = `
-            <h4>${notification.title}</h4>
-            <p>${notification.message}</p>
-            <span class="notification-time">${notification.time}</span>
-        `;
-        
-        notificationItem.addEventListener('click', () => {
-            notification.read = true;
-            updateNotifications();
-        });
-        
-        notificationList.appendChild(notificationItem);
+    
+    // Get the most recent notification (first one in the array since notifications are added with unshift)
+    const latestNotification = notificationsData[0];
+    
+    const notificationItem = document.createElement('div');
+    notificationItem.className = `notification-item ${latestNotification.read ? 'read' : 'unread'}`;
+    
+    notificationItem.innerHTML = `
+        <h4>${latestNotification.title}</h4>
+        <p>${latestNotification.message}</p>
+        <span class="notification-time">${latestNotification.time}</span>
+    `;
+    
+    notificationItem.addEventListener('click', () => {
+        latestNotification.read = true;
+        updateNotifications();
     });
+    
+    notificationList.appendChild(notificationItem);
 }
 
 // Setup Event Listeners

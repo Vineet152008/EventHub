@@ -21,7 +21,6 @@ const registrationForm = document.getElementById('registrationForm');
 const eventTitleSpan = document.getElementById('eventTitle');
 const eventIdInput = document.getElementById('eventId');
 const downloadEPassBtn = document.getElementById('downloadEPass');
-const shareEventBtn = document.getElementById('shareEvent');
 const ePassPreview = document.getElementById('ePassPreview');
 
 // Global Variables
@@ -513,31 +512,34 @@ function createEventLogos() {
 // Update Notifications
 function updateNotifications() {
     const unreadCount = notificationsData.filter(notification => !notification.read).length;
-    notificationCount.textContent = unreadCount;
+    notificationCount.textContent = unreadCount > 0 ? "1" : "0";
     
     if (notificationsData.length === 0) {
         notificationList.innerHTML = '<p class="empty-notification">No new notifications</p>';
         return;
     }
     
+    // Show only the most recent notification
     notificationList.innerHTML = '';
-    notificationsData.forEach(notification => {
-        const notificationItem = document.createElement('div');
-        notificationItem.className = `notification-item ${notification.read ? 'read' : 'unread'}`;
-        
-        notificationItem.innerHTML = `
-            <h4>${notification.title}</h4>
-            <p>${notification.message}</p>
-            <span class="notification-time">${notification.time}</span>
-        `;
-        
-        notificationItem.addEventListener('click', () => {
-            notification.read = true;
-            updateNotifications();
-        });
-        
-        notificationList.appendChild(notificationItem);
+    
+    // Get the most recent notification (first one in the array since notifications are added with unshift)
+    const latestNotification = notificationsData[0];
+    
+    const notificationItem = document.createElement('div');
+    notificationItem.className = `notification-item ${latestNotification.read ? 'read' : 'unread'}`;
+    
+    notificationItem.innerHTML = `
+        <h4>${latestNotification.title}</h4>
+        <p>${latestNotification.message}</p>
+        <span class="notification-time">${latestNotification.time}</span>
+    `;
+    
+    notificationItem.addEventListener('click', () => {
+        latestNotification.read = true;
+        updateNotifications();
     });
+    
+    notificationList.appendChild(notificationItem);
 }
 
 // Initialize Calendar
@@ -711,13 +713,18 @@ function toggleView(viewType) {
 
 // Open Registration Modal
 function openRegistrationModal(event) {
-    eventTitleSpan.textContent = event.title;
-    eventIdInput.value = event.id;
+    // Set modal content
+    document.getElementById('eventTitleSpan').textContent = event.title;
+    document.getElementById('eventDateSpan').textContent = formatDate(event.date);
+    document.getElementById('eventTimeSpan').textContent = event.time;
+    document.getElementById('eventLocationSpan').textContent = event.location;
     
+    // Show modal
     registrationModal.style.display = 'flex';
-    
-    // Prevent background scrolling
     document.body.style.overflow = 'hidden';
+    
+    // Set the current event ID for registration
+    registrationForm.dataset.eventId = event.id;
 }
 
 // Close Modal
@@ -730,40 +737,24 @@ function closeModal(modal) {
 function handleRegistration(e) {
     e.preventDefault();
     
+    // Get form data
     const formData = new FormData(registrationForm);
-    const eventId = parseInt(formData.get('eventId'));
+    const eventId = parseInt(registrationForm.dataset.eventId);
     const event = eventsData.find(e => e.id === eventId);
     
-    if (!event) {
-        return;
-    }
-    
-    // Create a registration entry
-    const registration = {
-        id: Date.now(),
-        eventId: eventId,
-        fullName: formData.get('fullName'),
-        studentId: formData.get('studentId'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        registrationDate: new Date().toISOString(),
-        epassCode: `ZEAL-${eventId}-${Date.now().toString().substr(5)}`
-    };
-    
-    // Add to registrations (simulating database save)
-    userRegistrations.push(registration);
+    // In a real app, this would be sent to the server
+    console.log('Registration submitted for event:', eventId);
+    console.log('Form data:', Object.fromEntries(formData));
     
     // Close registration modal
-    closeModal(registrationModal);
-    
-    // Generate e-pass preview
-    generateEPass(registration, event);
-    
-    // Show success modal
-    successModal.style.display = 'flex';
+    registrationModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
     
     // Reset form
     registrationForm.reset();
+    
+    // Show success modal with E-Pass
+    showRegistrationSuccess(event);
 }
 
 // Generate E-Pass
@@ -833,26 +824,6 @@ function downloadEPass() {
     
     notificationsData.unshift(downloadNotification);
     updateNotifications();
-}
-
-// Share Event
-function shareEvent() {
-    const eventTitle = eventTitleSpan.textContent;
-    const shareText = `Join me at ${eventTitle} - EventHub, Zeal Institute!`;
-    
-    // Check if Web Share API is available
-    if (navigator.share) {
-        navigator.share({
-            title: 'EventHub - Zeal Institute',
-            text: shareText,
-            url: window.location.href
-        }).catch(err => {
-            console.error('Error sharing:', err);
-        });
-    } else {
-        // Fallback for browsers that don't support Web Share API
-        prompt('Copy this link to share:', `${window.location.href}?event=${eventTitleSpan.textContent}`);
-    }
 }
 
 // Load placeholder images for events without images
@@ -928,9 +899,6 @@ function setupEventListeners() {
     // Download E-Pass
     downloadEPassBtn.addEventListener('click', downloadEPass);
     
-    // Share Event
-    shareEventBtn.addEventListener('click', shareEvent);
-    
     // Scroll Animation
     window.addEventListener('scroll', revealOnScroll);
 }
@@ -990,5 +958,332 @@ function processAllEventImages() {
             // Generate a dynamic image for this element
             generateDynamicImage(img, eventType);
         }
+    });
+}
+
+// Show Registration Success Modal
+function showRegistrationSuccess(event) {
+    // Create modal container if it doesn't exist
+    let registrationSuccessModal = document.getElementById('registrationSuccessModal');
+    
+    if (!registrationSuccessModal) {
+        registrationSuccessModal = document.createElement('div');
+        registrationSuccessModal.id = 'registrationSuccessModal';
+        registrationSuccessModal.className = 'modal registration-success-modal';
+        document.body.appendChild(registrationSuccessModal);
+    }
+    
+    // Generate a random e-pass code
+    const epassCode = `ZEAL-${event.id}-${Math.floor(10000 + Math.random() * 90000)}`;
+    
+    // Generate current date
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString();
+    
+    // Format event date
+    const eventDate = new Date(event.date);
+    const formattedEventDate = `${eventDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    })}`;
+    
+    // Create a mock user
+    const mockUser = {
+        name: "John Doe",
+        id: "ST2023001",
+        email: "john.doe@zeal.edu.in",
+        phone: "+91 9876543210"
+    };
+    
+    // Set modal content
+    registrationSuccessModal.innerHTML = `
+        <div class="modal-content registration-success-content">
+            <span class="close-modal">&times;</span>
+            
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            
+            <h2>Registration Successful!</h2>
+            
+            <p class="success-message">
+                Your e-pass is being generated. It will download automatically in a moment.
+            </p>
+            
+            <div class="epass-container">
+                <div class="epass-title-bar">
+                    <h3>Zeal Institute EventHub</h3>
+                    <p>E-Pass for Event</p>
+                </div>
+                
+                <h3 class="epass-event-title">${event.title}</h3>
+                
+                <div class="epass-event-details">
+                    <div class="epass-detail-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>${formattedEventDate}</span>
+                    </div>
+                    
+                    <div class="epass-detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>${event.time}</span>
+                    </div>
+                    
+                    <div class="epass-detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${event.location}</span>
+                    </div>
+                </div>
+                
+                <div class="epass-user-info">
+                    <div class="epass-info-item">
+                        <label>Name:</label>
+                        <span>${mockUser.name}</span>
+                    </div>
+                    
+                    <div class="epass-info-item">
+                        <label>Student ID:</label>
+                        <span>${mockUser.id}</span>
+                    </div>
+                    
+                    <div class="epass-info-item">
+                        <label>Email:</label>
+                        <span>${mockUser.email}</span>
+                    </div>
+                    
+                    <div class="epass-info-item">
+                        <label>Phone:</label>
+                        <span>${mockUser.phone}</span>
+                    </div>
+                </div>
+                
+                <div class="epass-code-box">
+                    ${epassCode}
+                </div>
+                
+                <div class="epass-footer">
+                    <p>Present this e-pass at the event entrance</p>
+                    <p>Generated on: ${formattedDate}</p>
+                </div>
+            </div>
+            
+            <div class="epass-actions">
+                <button id="downloadEPassBtn" class="btn primary-btn download-btn">Download E-Pass</button>
+            </div>
+        </div>
+    `;
+    
+    // Show the modal
+    registrationSuccessModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Add event listeners to the buttons
+    const downloadBtn = document.getElementById('downloadEPassBtn');
+    const closeBtn = registrationSuccessModal.querySelector('.close-modal');
+    
+    downloadBtn.addEventListener('click', () => {
+        downloadEventEPass(event, epassCode, mockUser);
+    });
+    
+    closeBtn.addEventListener('click', () => {
+        registrationSuccessModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
+    
+    // Auto-download the e-pass after 2 seconds (simulating "It will download automatically")
+    setTimeout(() => {
+        downloadEventEPass(event, epassCode, mockUser);
+    }, 2000);
+    
+    // Add to user's registered events
+    if (!userProfile.registeredEvents.includes(event.id)) {
+        userProfile.registeredEvents.push(event.id);
+        
+        // Create mock registration
+        const newRegistration = {
+            id: Date.now(),
+            eventId: event.id,
+            userId: userProfile.id,
+            registrationDate: new Date().toISOString(),
+            epassCode: epassCode
+        };
+        
+        // Add to mock registrations (if the mockRegistrations array exists)
+        if (typeof mockRegistrations !== 'undefined') {
+            mockRegistrations.push(newRegistration);
+        }
+    }
+    
+    // Add notification
+    const newNotification = {
+        id: Date.now(),
+        title: "Registration Successful",
+        message: `You've successfully registered for "${event.title}"`,
+        time: "Just now",
+        read: false
+    };
+    
+    notificationsData.unshift(newNotification);
+    updateNotifications();
+}
+
+// Download Event E-Pass
+function downloadEventEPass(event, epassCode, user) {
+    // Create a temporary container for the certificate to be downloaded
+    const tempContainer = document.createElement('div');
+    document.body.appendChild(tempContainer);
+    
+    // Format date for certificate
+    const eventDate = new Date(event.date);
+    const formattedEventDate = `${eventDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    })}`;
+    
+    // Current date for "generated on"
+    const currentDate = new Date();
+    const formattedCurrentDate = currentDate.toLocaleString();
+    
+    // Set content for the certificate (styled for PDF)
+    tempContainer.innerHTML = `
+        <div class="certificate-for-download" style="
+            width: 800px;
+            padding: 30px;
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            border: 1px solid #eee;
+        ">
+            <div style="
+                text-align: center;
+                padding: 20px;
+                background-color: #f39c12;
+                color: white;
+                margin-bottom: 30px;
+            ">
+                <h1 style="margin: 0; font-size: 28px;">Zeal Institute EventHub</h1>
+                <p style="margin: 5px 0 0; font-size: 18px;">E-Pass for Event</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img src="${event.image}" alt="${event.title}" style="
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 5px solid #f0f0f0;
+                    margin-bottom: 15px;
+                ">
+                <h2 style="margin: 15px 0; font-size: 26px; color: #333;">${event.title}</h2>
+            </div>
+            
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 25px;
+                border-bottom: 1px dashed #ddd;
+                padding-bottom: 20px;
+            ">
+                <div style="flex: 1; padding-right: 20px;">
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <span style="color: #3498db; margin-right: 10px;">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                        ${formattedEventDate}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <span style="color: #3498db; margin-right: 10px;">
+                            <i class="fas fa-clock"></i>
+                        </span>
+                        ${event.time}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <span style="color: #3498db; margin-right: 10px;">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        ${event.location}
+                    </p>
+                </div>
+                <div style="flex: 1; padding-left: 20px; border-left: 1px solid #eee;">
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Name:</strong> 
+                        ${user.name}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Student ID:</strong> 
+                        ${user.id}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Email:</strong> 
+                        ${user.email}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Phone:</strong> 
+                        ${user.phone}
+                    </p>
+                </div>
+            </div>
+            
+            <div style="
+                text-align: center;
+                padding: 15px;
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                margin-bottom: 30px;
+            ">
+                <p style="
+                    font-family: monospace;
+                    font-size: 22px;
+                    font-weight: 600;
+                    letter-spacing: 2px;
+                    margin: 0;
+                ">${epassCode}</p>
+            </div>
+            
+            <div style="text-align: center; color: #777; font-size: 14px;">
+                <p style="margin: 5px 0;">Present this e-pass at the event entrance</p>
+                <p style="margin: 5px 0;">Generated on: ${formattedCurrentDate}</p>
+            </div>
+        </div>
+    `;
+    
+    // Use html2canvas to create an image of the certificate
+    html2canvas(tempContainer.querySelector('.certificate-for-download'), {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null
+    }).then(canvas => {
+        // Remove the temporary container
+        document.body.removeChild(tempContainer);
+        
+        // Convert canvas to image data
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create PDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // Calculate dimensions to fit the certificate on the PDF
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 30;
+        
+        // Add image to PDF
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        
+        // Save the PDF
+        pdf.save(`${event.title}-EPass.pdf`);
+    }).catch(err => {
+        console.error("Error generating PDF:", err);
+        alert("There was an error generating the PDF. Please try again.");
     });
 } 

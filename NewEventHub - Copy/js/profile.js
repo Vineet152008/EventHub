@@ -237,10 +237,72 @@ function createEventItem(event, registration, type) {
     today.setHours(0, 0, 0, 0);
     const isPast = eventDate < today;
     
+    // Get event type name and color
+    const eventType = eventTypes.find(t => t.id === event.type);
+    const eventTypeName = eventType ? eventType.name : 'Event';
+    const colors = {
+        'technical': '#3498db',
+        'cultural': '#e74c3c',
+        'workshop': '#9b59b6',
+        'sports': '#2ecc71',
+        'seminar': '#f39c12',
+        'educational': '#1abc9c'
+    };
+    const bgColor = colors[event.type] || '#3498db';
+    
+    // Generate a proper event image if none exists
+    if (!event.image || event.image.includes('placeholder') || event.image.includes('unsplash')) {
+        // Create a dynamic logo for the event
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 400;
+        canvas.height = 250;
+        
+        // Create gradient background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, bgColor);
+        gradient.addColorStop(1, adjustColor(bgColor, -30));
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add decorative circles
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        for (let i = 0; i < 5; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const radius = Math.random() * 70 + 30;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Add icon based on event type
+        const icons = {
+            'technical': '💻',
+            'cultural': '🎭',
+            'workshop': '🔧',
+            'sports': '🏆',
+            'seminar': '📢',
+            'educational': '📚'
+        };
+        
+        const icon = icons[event.type] || '📅';
+        
+        // Draw icon in the center
+        ctx.font = '80px Arial, sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(icon, canvas.width / 2, canvas.height / 2);
+        
+        // Set the event image
+        event.image = canvas.toDataURL('image/png');
+    }
+    
     // Create HTML
     eventItem.innerHTML = `
         <div class="event-item-image">
-            <img src="${event.image}" alt="${event.title}">
+            <img src="${event.image}" alt="${event.title}" loading="lazy">
         </div>
         <div class="event-item-details">
             ${type === 'created' ? `<span class="event-status ${event.status}">${event.status}</span>` : ''}
@@ -298,11 +360,25 @@ function createEPassCard(event, registration) {
     // Format date
     const formattedDate = formatDate(event.date);
     
+    // Get color for the event type
+    const colors = {
+        'technical': '#3498db',
+        'cultural': '#e74c3c',
+        'workshop': '#9b59b6',
+        'sports': '#2ecc71',
+        'seminar': '#f39c12',
+        'educational': '#1abc9c'
+    };
+    const bgColor = colors[event.type] || '#3498db';
+    
     ePassCard.innerHTML = `
-        <div class="e-pass-header">
+        <div class="e-pass-header" style="background-color: ${bgColor};">
             <h3>Event E-Pass</h3>
         </div>
         <div class="e-pass-body">
+            <div class="e-pass-event-logo" style="text-align: center; margin-bottom: 15px;">
+                <img src="${event.image}" alt="${event.title}" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #f0f0f0;">
+            </div>
             <h3 class="e-pass-event-title">${event.title}</h3>
             <div class="e-pass-details">
                 <p><i class="fas fa-calendar-alt"></i> ${formattedDate}</p>
@@ -310,7 +386,7 @@ function createEPassCard(event, registration) {
                 <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
                 <p><i class="fas fa-user"></i> ${userProfile.name}</p>
             </div>
-            <div class="e-pass-code">${registration.epassCode}</div>
+            <div class="e-pass-code" style="background-color: #f5f5f5; padding: 8px; font-family: monospace; border-radius: 6px; font-size: 0.9rem; text-align: center; margin-top: 10px;">${registration.epassCode}</div>
         </div>
     `;
     
@@ -333,16 +409,29 @@ function openEPassModal(event, registration) {
         day: 'numeric'
     });
     
+    // Get the color for the event type
+    const colors = {
+        'technical': '#3498db',
+        'cultural': '#e74c3c',
+        'workshop': '#9b59b6',
+        'sports': '#2ecc71',
+        'seminar': '#f39c12',
+        'educational': '#1abc9c'
+    };
+    const bgColor = colors[event.type] || '#3498db';
+    
     // Create e-pass preview
     modalEPassPreview.innerHTML = `
         <div class="e-pass">
-            <div class="e-pass-header">
+            <div class="e-pass-header" style="background-color: ${bgColor};">
                 <h3>Zeal Institute EventHub</h3>
                 <p>E-Pass for Event</p>
             </div>
             <div class="e-pass-event">
+                <img class="event-logo" src="${event.image}" alt="${event.title}">
                 <h2>${event.title}</h2>
-                <p><i class="fas fa-calendar-alt"></i> ${formattedDate} | ${event.time}</p>
+                <p><i class="fas fa-calendar-alt"></i> ${formattedDate}</p>
+                <p><i class="fas fa-clock"></i> ${event.time}</p>
                 <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
             </div>
             <div class="e-pass-attendee">
@@ -365,46 +454,192 @@ function openEPassModal(event, registration) {
     ePassModal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     
-    // Set current e-pass for download and share
-    downloadEPassBtn.dataset.eventId = event.id;
-    shareEPassBtn.dataset.eventId = event.id;
+    // Set current e-pass for download
+    const downloadBtn = document.getElementById('downloadEPass');
+    downloadBtn.dataset.eventId = event.id;
+    
+    downloadBtn.addEventListener('click', () => {
+        downloadEPass(event.id);
+    });
+    
+    // Add event listener to the close button
+    const closeBtn = modalEPassPreview.querySelector('.close-modal');
+    closeBtn.addEventListener('click', () => {
+        closeModal(ePassModal);
+    });
 }
 
 // Download E-Pass as PDF
 function downloadEPass(eventId) {
-    const { jsPDF } = window.jspdf;
-    
-    html2canvas(modalEPassPreview, {
-        scale: 2
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const width = pdf.internal.pageSize.getWidth();
-        const height = (canvas.height * width) / canvas.width;
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-        pdf.save(`EventHub-EPass-${eventId}.pdf`);
-    });
-}
-
-// Share E-Pass
-function shareEPass(eventId) {
     const event = eventsData.find(e => e.id === parseInt(eventId));
-    const shareText = `My e-pass for ${event.title} at Zeal Institute EventHub`;
+    if (!event) return;
     
-    // Check if Web Share API is available
-    if (navigator.share) {
-        navigator.share({
-            title: 'EventHub E-Pass',
-            text: shareText,
-            url: window.location.href
-        }).catch(err => {
-            console.error('Error sharing:', err);
-        });
-    } else {
-        // Fallback for browsers that don't support Web Share API
-        prompt('Copy this link to share your e-pass:', `${window.location.href}?epass=${eventId}`);
-    }
+    // Create a temporary container for the certificate to be downloaded
+    const tempContainer = document.createElement('div');
+    document.body.appendChild(tempContainer);
+    
+    // Get registration
+    const registration = mockRegistrations.find(reg => reg.eventId === event.id);
+    
+    // Format date for certificate
+    const eventDate = new Date(event.date);
+    const formattedDate = `${eventDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    })}`;
+    
+    // Set content for the certificate (styled for PDF)
+    tempContainer.innerHTML = `
+        <div class="certificate-for-download" style="
+            width: 800px;
+            padding: 30px;
+            background-color: white;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            border: 1px solid #eee;
+        ">
+            <div style="
+                text-align: center;
+                padding: 20px;
+                background-color: #f39c12;
+                color: white;
+                margin-bottom: 30px;
+            ">
+                <h1 style="margin: 0; font-size: 28px;">Zeal Institute EventHub</h1>
+                <p style="margin: 5px 0 0; font-size: 18px;">E-Pass Certificate</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img src="${event.image}" alt="${event.title}" style="
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 5px solid #f0f0f0;
+                    margin-bottom: 15px;
+                ">
+                <h2 style="margin: 15px 0; font-size: 26px; color: #333;">${event.title}</h2>
+            </div>
+            
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 25px;
+                border-bottom: 1px dashed #ddd;
+                padding-bottom: 20px;
+            ">
+                <div style="flex: 1; padding-right: 20px;">
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <span style="color: #3498db; margin-right: 10px;">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                        ${formattedDate}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <span style="color: #3498db; margin-right: 10px;">
+                            <i class="fas fa-clock"></i>
+                        </span>
+                        ${event.time}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <span style="color: #3498db; margin-right: 10px;">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        ${event.location}
+                    </p>
+                </div>
+                <div style="flex: 1; padding-left: 20px; border-left: 1px solid #eee;">
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Name:</strong> 
+                        ${userProfile.name}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Student ID:</strong> 
+                        ${userProfile.id}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Email:</strong> 
+                        ${userProfile.email}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 16px;">
+                        <strong style="display: inline-block; width: 100px; color: #555;">Phone:</strong> 
+                        ${userProfile.phone}
+                    </p>
+                </div>
+            </div>
+            
+            <div style="
+                text-align: center;
+                padding: 15px;
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                margin-bottom: 30px;
+            ">
+                <p style="
+                    font-family: monospace;
+                    font-size: 22px;
+                    font-weight: 600;
+                    letter-spacing: 2px;
+                    margin: 0;
+                ">${registration.epassCode}</p>
+            </div>
+            
+            <div style="text-align: center; color: #777; font-size: 14px;">
+                <p style="margin: 5px 0;">Present this e-pass at the event entrance</p>
+                <p style="margin: 5px 0;">Generated on: ${new Date(registration.registrationDate).toLocaleString()}</p>
+            </div>
+        </div>
+    `;
+    
+    // Use html2canvas to create an image of the certificate
+    html2canvas(tempContainer.querySelector('.certificate-for-download'), {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null
+    }).then(canvas => {
+        // Remove the temporary container
+        document.body.removeChild(tempContainer);
+        
+        // Convert canvas to image data
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create PDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // Calculate dimensions to fit the certificate on the PDF
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgX = (pdfWidth - imgWidth * ratio) / 2;
+        const imgY = 30;
+        
+        // Add image to PDF
+        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+        
+        // Save the PDF
+        pdf.save(`${event.title}-EPass.pdf`);
+        
+        // Add notification
+        const newNotification = {
+            id: Date.now(),
+            title: "E-Pass Downloaded",
+            message: `Your e-pass for "${event.title}" has been downloaded successfully.`,
+            time: "Just now",
+            read: false
+        };
+        
+        notificationsData.unshift(newNotification);
+        updateNotifications();
+    }).catch(err => {
+        console.error("Error generating PDF:", err);
+        alert("There was an error generating the PDF. Please try again.");
+    });
 }
 
 // Cancel registration
@@ -503,31 +738,34 @@ function handleSettingsSubmit(e) {
 // Update notifications
 function updateNotifications() {
     const unreadCount = notificationsData.filter(notification => !notification.read).length;
-    notificationCount.textContent = unreadCount;
+    notificationCount.textContent = unreadCount > 0 ? "1" : "0";
     
     if (notificationsData.length === 0) {
         notificationList.innerHTML = '<p class="empty-notification">No new notifications</p>';
         return;
     }
     
+    // Show only the most recent notification
     notificationList.innerHTML = '';
-    notificationsData.forEach(notification => {
-        const notificationItem = document.createElement('div');
-        notificationItem.className = `notification-item ${notification.read ? 'read' : 'unread'}`;
-        
-        notificationItem.innerHTML = `
-            <h4>${notification.title}</h4>
-            <p>${notification.message}</p>
-            <span class="notification-time">${notification.time}</span>
-        `;
-        
-        notificationItem.addEventListener('click', () => {
-            notification.read = true;
-            updateNotifications();
-        });
-        
-        notificationList.appendChild(notificationItem);
+    
+    // Get the most recent notification (first one in the array since notifications are added with unshift)
+    const latestNotification = notificationsData[0];
+    
+    const notificationItem = document.createElement('div');
+    notificationItem.className = `notification-item ${latestNotification.read ? 'read' : 'unread'}`;
+    
+    notificationItem.innerHTML = `
+        <h4>${latestNotification.title}</h4>
+        <p>${latestNotification.message}</p>
+        <span class="notification-time">${latestNotification.time}</span>
+    `;
+    
+    notificationItem.addEventListener('click', () => {
+        latestNotification.read = true;
+        updateNotifications();
     });
+    
+    notificationList.appendChild(notificationItem);
 }
 
 // Close modal
@@ -540,6 +778,22 @@ function closeModal(modal) {
 function formatDate(dateString) {
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+}
+
+// Helper function to adjust color brightness
+function adjustColor(hex, percent) {
+    // Convert hex to RGB
+    let r = parseInt(hex.substr(1, 2), 16);
+    let g = parseInt(hex.substr(3, 2), 16);
+    let b = parseInt(hex.substr(5, 2), 16);
+
+    // Adjust each channel
+    r = Math.max(0, Math.min(255, r + percent));
+    g = Math.max(0, Math.min(255, g + percent));
+    b = Math.max(0, Math.min(255, b + percent));
+
+    // Convert back to hex
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
 // Setup Event Listeners

@@ -228,7 +228,14 @@
     <div id="registrationModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2>Register for <span id="eventTitle"></span></h2>
+            <h2>Register for <span id="eventTitleSpan"></span></h2>
+            
+            <div class="event-details-summary">
+                <p><i class="fas fa-calendar-alt"></i> <span id="eventDateSpan"></span></p>
+                <p><i class="fas fa-clock"></i> <span id="eventTimeSpan"></span></p>
+                <p><i class="fas fa-map-marker-alt"></i> <span id="eventLocationSpan"></span></p>
+            </div>
+            
             <form id="registrationForm">
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
@@ -246,7 +253,6 @@
                     <label for="phone">Phone Number</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
-                <input type="hidden" id="eventId" name="eventId">
                 <button type="submit" class="btn primary-btn">Register Now</button>
             </form>
         </div>
@@ -265,8 +271,7 @@
                 <!-- E-pass preview will be shown here -->
             </div>
             <div class="success-actions">
-                <button id="downloadEPass" class="btn primary-btn">Download E-Pass</button>
-                <button id="shareEvent" class="btn secondary-btn">Share Event</button>
+                <button id="downloadEPass" class="btn primary-btn download-btn">Download E-Pass</button>
             </div>
         </div>
     </div>
